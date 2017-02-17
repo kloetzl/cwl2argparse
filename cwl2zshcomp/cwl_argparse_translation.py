@@ -136,8 +136,9 @@ def cwl2zshcomp(file, dest, quiet=False, no_confirm=False, prefix=None):
     result = template.render(tool=tool, args=args, function_name=function_name)
 
     # output
-    filename = file.split('/')[-1].replace('.cwl', '.py')
-    filepath = os.path.join(dest, filename)
+    path = file.split('/')[:-1]
+    filename = path + ['_' + tool.basecommand]
+    filepath = os.path.join(dest, *filename)
     if no_confirm is False and os.path.exists(filepath):
         override = input('Filepath {0} already exists, override existing file? y/n '.format(filepath))
         if override in {'y', 'Y'}:
