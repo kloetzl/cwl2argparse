@@ -17,17 +17,21 @@ argument_names = []
 class Argument:
     def __init__(self, arg):
         self.dest = Argument._get_dest(arg)
-        self.help = arg.description
+        self.help = Argument._get_help(arg)
         self.option_string = Argument._get_option_string(arg)
         self.default = Argument._get_default(arg)
-        self.action = Argument._get_actions(arg)
         self.type = Argument._get_type(arg)
         self.nargs = Argument._get_nargs(arg)
         self.choices = Argument._get_choices(arg)
         self.separate = arg.separate
-        if self.action:
-            self.type = self.default = None
     
+    @staticmethod
+    def _get_help(arg):
+        if arg.description != None:
+            return arg.description.strip('\n\r')
+        else:
+            return '(undocumented)'
+
     @staticmethod
     def _get_dest(arg):
         s = arg.id.strip(string.punctuation)
@@ -67,15 +71,12 @@ class Argument:
             'float': 'float',
             'array': 'list',
             'File': 'file',
-            'stdout': 'argparse.FileType()',
-            'stderr': 'argparse.FileType()',
+            'stdout': 'file',
+            'stderr': 'file',
             'enum': 'enum',
         }
         arg_type = CWL_TO_PY_TYPES[arg.get_type()]
-        if arg_type is list and type(arg_type) is list:
-            return None
-        else:
-            return arg_type
+        return arg_type
 
     @staticmethod
     def _get_choices(arg):
@@ -93,11 +94,6 @@ class Argument:
             else:
                 return arg.default
 
-
-    @staticmethod
-    def _get_actions(arg):
-        if arg.optional and arg.get_type() == 'boolean':
-            return 'store_true'
     
     @staticmethod
     def _get_nargs(arg):

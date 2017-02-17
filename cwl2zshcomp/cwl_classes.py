@@ -76,10 +76,17 @@ class Tool:
             sys.exit('`class` attribute of the CWL document not found')
         if self.tool_class != 'CommandLineTool':
             raise ValueError('Wrong tool class')
+
         try:
             self.basecommand = tool['baseCommand']
         except KeyError:
             sys.exit('`baseCommand` attribute of the CWL document not found')
+        if type(self.basecommand) == list:
+            if len(self.basecommand) == 1:
+                self.basecommand = self.basecommand[0]
+            else:
+                raise ValueError('Multi part commands not yet implemented')
+
         self.inputs = OrderedDict()
         if type(tool['inputs']) is list:  # ids not mapped
             for param_dict in tool['inputs']:
@@ -90,16 +97,6 @@ class Tool:
                 param_dict['id'] = id
                 param = InputParam(param_dict)
                 self.inputs[id] = param
-        # self.outputs = OrderedDict()
-        # if tool['outputs']:
-        #     if type(tool['outputs']) is list:  # ids not mapped
-        #         for param_dict in tool['outputs']:
-        #             param = OutputParam(param_dict)
-        #             self.outputs[param.id] = param
-        #     elif type(tool['outputs']) is dict:  # ids mapped
-        #         for id, param_dict in tool['outputs'].items():
-        #             param_dict['id'] = id
-        #             param = OutputParam(param_dict)
-        #             self.outputs[id] = param
+
         self.description = tool.get('doc', tool.get('description', None))
         self.cwl_version = tool.get('cwlVersion', '')
