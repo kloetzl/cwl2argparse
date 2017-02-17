@@ -2,6 +2,8 @@
 
 cwl2zshcomp generates ZSH auto completions from CWL tool descriptions. The result is not perfect, but should replace a lot of manual labor.
 
+If you read this, you might also like [biozsh](https://github.com/kloetzl/bioszsh), a curated directory of ZSH auto completions for bioinformatics tools.
+
 ## Installation
 
     $ git clone https://github.com/kloetzl/cwl2zshcomp
@@ -10,13 +12,13 @@ cwl2zshcomp generates ZSH auto completions from CWL tool descriptions. The resul
   
 ## Usage
 
-    cwl2zshcomp FILES [FILES ...] [options]
+    cwl2zshcomp [options] FILES...
     
-Options:
-* `FILES` - a list of CWL tool descriptions or directories with tools
+Available options:
 * `-d`, `--dest` - Destination directory to store resulting files
+* `-h`, `--help` - Print help
 * `-q`, `--quiet` - Do not print generated code to system output
-* `-f` - If a file with a name the same as the generated one already exists, force overriding
+* `-f` - Force overriding a output file, if it already exists
 
 
 ## License
