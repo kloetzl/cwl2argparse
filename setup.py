@@ -21,5 +21,4 @@ setup(name="cwl2zshcomp",
           'License :: OSI Approved :: Apache Software License',
       ],
       include_package_data=True,
-      package_data={'':'argparse.j2'}
       )
