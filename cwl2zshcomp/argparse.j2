@@ -1,0 +1,12 @@
+#compdef _{{ tool.name }} {{ tool.name }}
+
+_{{ tool.name }} () {
+    local args
+    args+=(
+        {% for arg in args %}
+        '{{ arg.option_string}}[{{ arg.help }}]'
+        {% endfor %}
+    )
+}
+
+_{{ tool.name }}

@@ -4,7 +4,7 @@ import sys
 import unittest
 from unittest import mock
 
-from cwl2argparse.main import main
+from cwl2zshcomp.main import main
 
 
 class GeneralTestCase(unittest.TestCase):

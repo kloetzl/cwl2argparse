@@ -9,7 +9,7 @@ from yaml import scanner
 from jinja2 import Environment
 from jinja2.loaders import FileSystemLoader
 
-from cwl2argparse.cwl_classes import Tool
+from cwl2zshcomp.cwl_classes import Tool
 
 argument_names = []
 
@@ -119,25 +119,32 @@ def write_code_to_file(filepath, code):
         f.write(code)
 
 
-def cwl2argparse(file, dest, quiet=False, no_confirm=False, prefix=None):
+def cwl2zshcomp(file, dest, quiet=False, no_confirm=False, prefix=None):
     if not file.endswith('.cwl'):
         sys.exit('{0} is not a CWL tool definition'.format(file))
     try:
         tool = Tool(file)
     except yaml.scanner.ScannerError:
         sys.exit('File {0} is corrupted or not a CWL tool definition')
+
+    # input
     args = []
     tool.inputs.update(tool.outputs)
     for arg in tool.inputs.values():
         arg.prefix = prefix
         args.append(Argument(arg))
+
     path = os.path.abspath(os.path.dirname(__file__))
     env = Environment(loader=FileSystemLoader(path),
                       trim_blocks=True,
                       lstrip_blocks=True)
+
+    # processing
     template = env.get_template('argparse.j2')
     function_name = file.split('/')[-1].replace('.cwl', '').replace('-', '_')
     result = template.render(tool=tool, args=args, function_name=function_name)
+
+    # output
     filename = file.split('/')[-1].replace('.cwl', '.py')
     filepath = os.path.join(dest, filename)
     if no_confirm is False and os.path.exists(filepath):
