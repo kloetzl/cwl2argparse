@@ -18,12 +18,13 @@ class Argument:
     def __init__(self, arg):
         self.dest = Argument._get_dest(arg)
         self.help = arg.description
-        self.option_string = Argument._check_conflicting_prefixes(Argument._get_option_string(arg))
+        self.option_string = Argument._get_option_string(arg)
         self.default = Argument._get_default(arg)
         self.action = Argument._get_actions(arg)
         self.type = Argument._get_type(arg)
         self.nargs = Argument._get_nargs(arg)
         self.choices = Argument._get_choices(arg)
+        self.separate = arg.separate
         if self.action:
             self.type = self.default = None
     
@@ -36,18 +37,11 @@ class Argument:
 
     @staticmethod
     def _get_option_string(arg):
-        if arg.optional:
-            if hasattr(arg, 'input_binding'):
-                if arg.input_binding.prefix:
-                    name = arg.input_binding.prefix.strip(string.punctuation)
-                    if len(name) == 1:
-                        return '-' + name
-                    else:
-                        return '--' + name
-                else:
-                    return '--' + arg.id.strip(string.punctuation)
-        else:
-            return Argument._get_dest(arg)
+        if hasattr(arg, 'input_binding'):
+            if arg.input_binding.prefix:
+                return arg.input_binding.prefix #.strip(string.punctuation)
+            else:
+                return '--' + arg.id.strip(string.punctuation)
 
     @staticmethod
     def _check_conflicting_prefixes(name):
@@ -72,10 +66,10 @@ class Argument:
             'double': 'float',
             'float': 'float',
             'array': 'list',
-            'File': 'argparse.FileType()',
+            'File': 'file',
             'stdout': 'argparse.FileType()',
             'stderr': 'argparse.FileType()',
-            'enum': None,
+            'enum': 'enum',
         }
         arg_type = CWL_TO_PY_TYPES[arg.get_type()]
         if arg_type is list and type(arg_type) is list:
@@ -87,7 +81,7 @@ class Argument:
     def _get_choices(arg):
         if arg.get_type() == 'enum':
             if type(arg.type) is list and arg.type[0] == 'null':
-                return arg.type[1]['symbols']
+                return '(' + ' '.join(arg.type[1]['symbols']) + ')'
             elif type(arg.type) is dict:
                 return arg.type['symbols']
 
@@ -129,12 +123,13 @@ def cwl2zshcomp(file, dest, quiet=False, no_confirm=False, prefix=None):
 
     # input
     args = []
-    tool.inputs.update(tool.outputs)
+    # tool.inputs.update(tool.outputs)
     for arg in tool.inputs.values():
         arg.prefix = prefix
         args.append(Argument(arg))
 
     path = os.path.abspath(os.path.dirname(__file__))
+    print(path)
     env = Environment(loader=FileSystemLoader(path),
                       trim_blocks=True,
                       lstrip_blocks=True)

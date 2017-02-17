@@ -1,12 +1,29 @@
-#compdef _{{ tool.name }} {{ tool.name }}
+#compdef _{{ tool.basecommand }} {{ tool.basecommand }}
 
-_{{ tool.name }} () {
+_{{ tool.basecommand }} () {
     local args
     args+=(
         {% for arg in args %}
-        '{{ arg.option_string}}[{{ arg.help }}]'
+        '{%
+            if arg.type == 'bool' %}({{
+                arg.option_string }}){%
+            endif %}{{
+            arg.option_string }}{% 
+            if arg.separate == False
+                %}-{%
+            endif %}[{{ arg.help }}]{%
+            if arg.type != 'bool' %}:{{
+                arg.type }}:{% 
+                if arg.type == 'enum' %}{{
+                    arg.choices }}{%
+                endif %}{%
+                if arg.type == 'file' %}_files{%
+                endif %}{%
+            endif
+            %}'
         {% endfor %}
     )
+    _arguments $args[@]
 }
 
-_{{ tool.name }}
+_{{ tool.basecommand }}

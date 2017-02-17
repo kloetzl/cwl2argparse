@@ -22,10 +22,10 @@ def main():
     dest = args.dest or os.getcwd()
     for f in files:
         if os.path.isfile(f):
-            cwl2zshcomp(f, dest, args.quiet, args.y, args.prefix)
+            cwl2zshcomp(f, dest, args.quiet, args.f, "")
         elif os.path.isdir(f):
             for file in os.listdir(f):
-                cwl2zshcomp(os.path.join(f, file), dest, args.prefix)
+                cwl2zshcomp(os.path.join(f, file), dest, "")
         else:
             print("Couldn't process {0}: neither file nor directory".format(f))
     print('Generated to {0}'.format(os.path.abspath(dest)))

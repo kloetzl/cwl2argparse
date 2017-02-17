@@ -38,6 +38,7 @@ class InputParam(Param):
             self.optional = False
         self.description = param.get('doc', param.get('description', None))
         self.default = param.get('default', None)
+        self.separate = param.get('separate', True)
         input_binding = param.get('inputBinding', None)
         if input_binding:
             self.input_binding = InputBinding(input_binding)
@@ -89,16 +90,16 @@ class Tool:
                 param_dict['id'] = id
                 param = InputParam(param_dict)
                 self.inputs[id] = param
-        self.outputs = OrderedDict()
-        if tool['outputs']:
-            if type(tool['outputs']) is list:  # ids not mapped
-                for param_dict in tool['outputs']:
-                    param = OutputParam(param_dict)
-                    self.outputs[param.id] = param
-            elif type(tool['outputs']) is dict:  # ids mapped
-                for id, param_dict in tool['outputs'].items():
-                    param_dict['id'] = id
-                    param = OutputParam(param_dict)
-                    self.outputs[id] = param
+        # self.outputs = OrderedDict()
+        # if tool['outputs']:
+        #     if type(tool['outputs']) is list:  # ids not mapped
+        #         for param_dict in tool['outputs']:
+        #             param = OutputParam(param_dict)
+        #             self.outputs[param.id] = param
+        #     elif type(tool['outputs']) is dict:  # ids mapped
+        #         for id, param_dict in tool['outputs'].items():
+        #             param_dict['id'] = id
+        #             param = OutputParam(param_dict)
+        #             self.outputs[id] = param
         self.description = tool.get('doc', tool.get('description', None))
         self.cwl_version = tool.get('cwlVersion', '')
