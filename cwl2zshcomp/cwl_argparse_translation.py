@@ -28,7 +28,7 @@ class Argument:
     @staticmethod
     def _get_help(arg):
         if arg.description != None:
-            return arg.description.strip('\n\r')
+            return arg.description.strip().replace('\n','')
         else:
             return '(undocumented)'
 
