@@ -1,72 +1,26 @@
-# cwl2argparse
-cwl2argparse generates an argparse definition from CWL tool arguments that can be pasted in a Python program and used
+# cwl2zshcomp
 
-`search.cwl`
+cwl2zshcomp generates ZSH auto completions from CWL tool descriptions. The result is not perfect, but should replace a lot of manual labor.
 
-    #!/usr/bin/env cwl-runner
-    cwlVersion: "cwl:draft-3"
-    class: CommandLineTool
-    baseCommand: ['search.py']
-    
-    description: |
-      Toy program to search inverted index and print out each line the term appears
-    inputs:
-      - id: mainfile
-      type: File
-      description: Text file to be indexed
-      inputBinding:
-        position: 1
-    
-    - id: term
-      type: string
-      description: Term for search
-      inputBinding:
-        position: 2
-    
-    outputs:
-        []
+## Installation
 
-Result
-`search.py`
-
-    import argparse
-    
-    
-    def parser():
-        description="""
-            Toy program to search inverted index and print out each line the term appears
-        """
-        
-        parser = argparse.ArgumentParser(description=description)
-        arg_mainfile = parser.add_argument("arg_mainfile",
-            type=argparse.FileType(),       help="""Text file to be indexed""",)
-        arg_term = parser.add_argument("arg_term",
-            type=str,       help="""Term for search""",)
-    
-        return parser
-
-
-
-## Installation ##
-
-    $ pip install cwl2argparse
+    $ git clone https://github.com/kloetzl/cwl2zshcomp
+    $ cd cwl2zshcomp
+    $ sudo pip install .
   
-## Running ##
+## Usage
 
-    cwl2argparse FILES [FILES ...] [options]
+    cwl2zshcomp FILES [FILES ...] [options]
     
 Options:
 * `FILES` - a list of CWL tool descriptions or directories with tools
-*   `-p`, `--prefix` - Prefix to be added to all argument variables in resulting Python code.
-
-For instance, providing `arg_` as a prefix will result in generating the next lines for the example above:
-
-        arg_mainfile = parser.add_argument("mainfile",
-            type=argparse.FileType(),help="""Text file to be indexed""",)
-        arg_term = parser.add_argument("term",
-            type=str,help="""Term for search""",)
-  
-  
-* `-d`, `--dest` - Destination directory to store resulting .py files
+* `-d`, `--dest` - Destination directory to store resulting files
 * `-q`, `--quiet` - Do not print generated code to system output
-* `-y` - If a file with a name the same as the generated one already exists, replace it without confirmation
+* `-f` - If a file with a name the same as the generated one already exists, force overriding
+
+
+## License
+
+Apache License 2.0
+
+Original Code for [cwl2argparse](https://github.com/common-workflow-language/cwl2argparse) by Anton Khodak
