@@ -1,1 +1,1 @@
-include cwl2argparse/*.j2
+include cwl2zshcomp/*.j2

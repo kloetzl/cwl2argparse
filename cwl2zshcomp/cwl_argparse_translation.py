@@ -125,7 +125,6 @@ def cwl2zshcomp(file, dest, quiet=False, no_confirm=False, prefix=None):
         args.append(Argument(arg))
 
     path = os.path.abspath(os.path.dirname(__file__))
-    print(path)
     env = Environment(loader=FileSystemLoader(path),
                       trim_blocks=True,
                       lstrip_blocks=True)
