@@ -55,15 +55,6 @@ class InputParam(Param):
         else:
             return self.type
 
-class OutputParam(Param):
-    def __init__(self, param):
-        self.id = param['id']
-        self.type = param.get('type', None)
-        self.description = param.get('description', None)
-        output_binding = param.get('outputBinding', None)
-        if output_binding:
-            self.output_binding = OutputBinding(output_binding)
-
 
 class Tool:
     def __init__(self, filename):
